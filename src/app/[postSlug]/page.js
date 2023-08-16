@@ -6,8 +6,21 @@ import BlogHero from '@/components/BlogHero';
 
 import styles from './postSlug.module.css';
 
+export const getBlogPost = React.cache(async (postSlug) => {
+  return loadBlogPost(postSlug);
+});
+
+export async function generateMetadata({ params }) {
+  const { frontmatter } = await getBlogPost(params.postSlug);
+
+  return {
+    title: frontmatter.title,
+    description: frontmatter.abstract,
+  };
+}
+
 async function BlogPost({ params }) {
-  const { frontmatter, content } = await loadBlogPost(params.postSlug);
+  const { frontmatter, content } = await getBlogPost(params.postSlug);
 
   return (
     <article className={styles.wrapper}>
