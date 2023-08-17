@@ -5,6 +5,11 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import BlogHero from '@/components/BlogHero';
 import CodeSnippet from '@/components/CodeSnippet/CodeSnippet';
 
+import dynamic from 'next/dynamic';
+const DivisionGroupsDemo = dynamic(() =>
+  import('@/components/DivisionGroupsDemo/DivisionGroupsDemo')
+);
+
 import styles from './postSlug.module.css';
 
 export const getBlogPost = React.cache(async (postSlug) => {
@@ -30,7 +35,10 @@ async function BlogPost({ params }) {
         publishedOn={frontmatter.publishedOn}
       />
       <div className={styles.page}>
-        <MDXRemote source={content} components={{ pre: CodeSnippet }} />
+        <MDXRemote
+          source={content}
+          components={{ pre: CodeSnippet, DivisionGroupsDemo }}
+        />
       </div>
     </article>
   );
