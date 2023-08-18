@@ -1,11 +1,11 @@
 import React from 'react';
 import { loadBlogPost } from '@/helpers/file-helpers';
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import dynamic from 'next/dynamic';
+import { notFound } from 'next/navigation';
 
 import BlogHero from '@/components/BlogHero';
 import CodeSnippet from '@/components/CodeSnippet/CodeSnippet';
-
-import dynamic from 'next/dynamic';
 
 const CircularColorsDemo = dynamic(() =>
   import('@/components/CircularColorsDemo/CircularColorsDemo')
@@ -21,7 +21,14 @@ export const getBlogPost = React.cache(async (postSlug) => {
 });
 
 export async function generateMetadata({ params }) {
-  const { frontmatter } = await getBlogPost(params.postSlug);
+  let blogPost;
+  try {
+    blogPost = await getBlogPost(params.postSlug);
+  } catch (err) {
+    // assume this is always file not found for now
+    notFound();
+  }
+  const { frontmatter } = blogPost;
 
   return {
     title: frontmatter.title,
@@ -30,7 +37,14 @@ export async function generateMetadata({ params }) {
 }
 
 async function BlogPost({ params }) {
-  const { frontmatter, content } = await getBlogPost(params.postSlug);
+  let blogPost;
+  try {
+    blogPost = await getBlogPost(params.postSlug);
+  } catch (err) {
+    // assume this is always file not found for now
+    notFound();
+  }
+  const { frontmatter, content } = blogPost;
 
   return (
     <article className={styles.wrapper}>
