@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { Rss, Sun, Moon } from 'react-feather';
 import { LIGHT_COLORS, DARK_COLORS } from '@/constants';
 import Cookie from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 import Logo from '@/components/Logo';
 import VisuallyHidden from '@/components/VisuallyHidden';
@@ -13,8 +14,13 @@ import styles from './Header.module.css';
 
 function Header({ initialTheme, className, ...delegated }) {
   const [theme, setTheme] = React.useState(initialTheme);
+  const router = useRouter();
 
-  function handleClick() {
+  function handleRssClick() {
+    router.push('/rss.xml');
+  }
+
+  function handleDarkModeClick() {
     const nextTheme = theme === 'light' ? 'dark' : 'light';
 
     setTheme(nextTheme);
@@ -37,7 +43,7 @@ function Header({ initialTheme, className, ...delegated }) {
       <Logo />
 
       <div className={styles.actions}>
-        <button className={styles.action}>
+        <button onClick={handleRssClick} className={styles.action}>
           <Rss
             size="1.5rem"
             style={{
@@ -47,7 +53,7 @@ function Header({ initialTheme, className, ...delegated }) {
           />
           <VisuallyHidden>View RSS feed</VisuallyHidden>
         </button>
-        <button className={styles.action} onClick={handleClick}>
+        <button className={styles.action} onClick={handleDarkModeClick}>
           {theme === 'light' ? <Sun size="1.5rem" /> : <Moon size="1.5rem" />}
           <VisuallyHidden>Toggle dark / light mode</VisuallyHidden>
         </button>

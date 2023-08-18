@@ -4,12 +4,12 @@ import { getBlogPostList } from '@/helpers/file-helpers';
 import BlogSummaryCard from '@/components/BlogSummaryCard';
 
 import styles from './homepage.module.css';
-import { BLOG_TITLE } from '@/constants';
+import { BLOG_DESCRIPTION, BLOG_TITLE } from '@/constants';
 
 export async function generateMetadata() {
   return {
     title: BLOG_TITLE,
-    description: 'A wonderful blog about JavaScript',
+    description: BLOG_DESCRIPTION,
   };
 }
 
