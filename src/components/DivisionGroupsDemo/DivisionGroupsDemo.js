@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import clsx from 'clsx';
-import { motion } from 'framer-motion';
+import { LayoutGroup, motion } from 'framer-motion';
 
 import { range } from '@/utils';
 import Card from '@/components/Card';
@@ -18,8 +18,8 @@ function DivisionGroupsDemo({
   const [numOfGroups, setNumOfGroups] = React.useState(initialNumOfGroups);
 
   const numOfItemsPerGroup = Math.floor(numOfItems / numOfGroups);
-
   const remainder = includeRemainderArea ? numOfItems % numOfGroups : null;
+  const numOfItemsBeforeRemainderGroup = numOfItems - remainder;
 
   // When we're splitting into 1-3 groups, display side-by-side
   // columns. When we get to 4, it should switch to a 2x2 grid.
@@ -36,63 +36,69 @@ function DivisionGroupsDemo({
   const id = React.useId();
 
   return (
-    <Card as="section" className={styles.wrapper}>
-      <header className={styles.header}>
-        <SliderControl
-          label="Number of Groups"
-          className={styles.slider}
-          step={1}
-          min={1}
-          max={4}
-          value={numOfGroups}
-          onChange={(ev) => setNumOfGroups(Number(ev.target.value))}
-        />
-      </header>
+    <LayoutGroup>
+      <Card as="section" className={styles.wrapper}>
+        <header className={styles.header}>
+          <SliderControl
+            label="Number of Groups"
+            className={styles.slider}
+            step={1}
+            min={1}
+            max={4}
+            value={numOfGroups}
+            onChange={(ev) => setNumOfGroups(Number(ev.target.value))}
+          />
+        </header>
 
-      <div className={styles.demoWrapper}>
-        <div className={clsx(styles.demoArea)} style={gridStructure}>
-          {range(numOfGroups).map((groupIndex) => (
-            <div key={groupIndex} className={styles.group}>
-              {range(numOfItemsPerGroup).map((index) => {
+        <div className={styles.demoWrapper}>
+          <div className={clsx(styles.demoArea)} style={gridStructure}>
+            {range(numOfGroups).map((groupIndex) => {
+              const totalInPreviousGroups = groupIndex * numOfItemsPerGroup;
+
+              return (
+                <div key={groupIndex} className={styles.group}>
+                  {range(numOfItemsPerGroup).map((index) => {
+                    return (
+                      <motion.div
+                        key={`${id}-${totalInPreviousGroups + index + 1}`}
+                        layoutId={`${id}-${totalInPreviousGroups + index + 1}`}
+                        className={styles.item}
+                      />
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {includeRemainderArea && (
+          <div className={styles.remainderArea}>
+            <p className={styles.remainderHeading}>Remainder Area</p>
+
+            {range(0, remainder)
+              .reverse()
+              .map((index) => {
                 return (
                   <motion.div
-                    key={`${id}-${groupIndex * numOfItemsPerGroup + index + 1}`}
+                    key={`${id}-${numOfItemsBeforeRemainderGroup + index + 1}`}
                     layoutId={`${id}-${
-                      groupIndex * numOfItemsPerGroup + index + 1
+                      numOfItemsBeforeRemainderGroup + index + 1
                     }`}
                     className={styles.item}
                   />
                 );
               })}
-            </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        )}
 
-      {includeRemainderArea && (
-        <div className={styles.remainderArea}>
-          <p className={styles.remainderHeading}>Remainder Area</p>
-
-          {range(remainder).map((index) => {
-            return (
-              <motion.div
-                key={numOfItems - remainder + (remainder - index)}
-                layoutId={`${id}-${
-                  numOfItems - remainder + (remainder - index)
-                }`}
-                className={styles.item}
-              />
-            );
-          })}
-        </div>
-      )}
-
-      <Equation
-        dividend={numOfItems}
-        divisor={numOfGroups}
-        remainder={remainder}
-      />
-    </Card>
+        <Equation
+          dividend={numOfItems}
+          divisor={numOfGroups}
+          remainder={remainder}
+        />
+      </Card>
+    </LayoutGroup>
   );
 }
 

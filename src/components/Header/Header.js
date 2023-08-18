@@ -3,7 +3,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { Rss, Sun, Moon } from 'react-feather';
-import { LIGHT_COLORS, DARK_COLORS } from '@/constants';
+import { THEME_COOKIE_NAME, LIGHT_TOKENS, DARK_TOKENS } from '@/constants';
 import Cookie from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
@@ -25,12 +25,12 @@ function Header({ initialTheme, className, ...delegated }) {
 
     setTheme(nextTheme);
 
-    Cookie.set('color-theme', nextTheme, {
+    Cookie.set(THEME_COOKIE_NAME, nextTheme, {
       expires: 1000,
     });
 
     const root = document.documentElement;
-    const colors = nextTheme === 'light' ? LIGHT_COLORS : DARK_COLORS;
+    const colors = nextTheme === 'light' ? LIGHT_TOKENS : DARK_TOKENS;
 
     root.setAttribute('data-color-theme', nextTheme);
     Object.entries(colors).forEach(([key, value]) => {

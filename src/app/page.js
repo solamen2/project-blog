@@ -6,7 +6,7 @@ import BlogSummaryCard from '@/components/BlogSummaryCard';
 import styles from './homepage.module.css';
 import { BLOG_DESCRIPTION, BLOG_TITLE } from '@/constants';
 
-export async function generateMetadata() {
+export function generateMetadata() {
   return {
     title: BLOG_TITLE,
     description: BLOG_DESCRIPTION,
@@ -19,14 +19,14 @@ async function Home() {
   return (
     <div className={styles.wrapper}>
       <h1 className={styles.mainHeading}>Latest Content:</h1>
-      {blogPosts.map((blogPost) => {
+      {blogPosts.map(({ slug, title, abstract, publishedOn }) => {
         return (
           <BlogSummaryCard
-            key={blogPost.slug}
-            slug={blogPost.slug}
-            title={blogPost.title}
-            abstract={blogPost.abstract}
-            publishedOn={blogPost.publishedOn}
+            key={slug}
+            slug={slug}
+            title={title}
+            abstract={abstract}
+            publishedOn={publishedOn}
           />
         );
       })}

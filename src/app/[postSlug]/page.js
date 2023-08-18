@@ -1,29 +1,17 @@
 import React from 'react';
 import { loadBlogPost } from '@/helpers/file-helpers';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import dynamic from 'next/dynamic';
 import { notFound } from 'next/navigation';
 
 import BlogHero from '@/components/BlogHero';
-import CodeSnippet from '@/components/CodeSnippet/CodeSnippet';
-
-const CircularColorsDemo = dynamic(() =>
-  import('@/components/CircularColorsDemo/CircularColorsDemo')
-);
-const DivisionGroupsDemo = dynamic(() =>
-  import('@/components/DivisionGroupsDemo/DivisionGroupsDemo')
-);
 
 import styles from './postSlug.module.css';
-
-export const getBlogPost = React.cache(async (postSlug) => {
-  return loadBlogPost(postSlug);
-});
+import COMPONENT_MAP from '@/helpers/mdx-components';
 
 export async function generateMetadata({ params }) {
   let blogPost;
   try {
-    blogPost = await getBlogPost(params.postSlug);
+    blogPost = await loadBlogPost(params.postSlug);
   } catch (err) {
     // assume this is always file not found for now
     notFound();
@@ -39,7 +27,7 @@ export async function generateMetadata({ params }) {
 async function BlogPost({ params }) {
   let blogPost;
   try {
-    blogPost = await getBlogPost(params.postSlug);
+    blogPost = await loadBlogPost(params.postSlug);
   } catch (err) {
     // assume this is always file not found for now
     notFound();
@@ -53,14 +41,7 @@ async function BlogPost({ params }) {
         publishedOn={frontmatter.publishedOn}
       />
       <div className={styles.page}>
-        <MDXRemote
-          source={content}
-          components={{
-            pre: CodeSnippet,
-            CircularColorsDemo,
-            DivisionGroupsDemo,
-          }}
-        />
+        <MDXRemote source={content} components={COMPONENT_MAP} />
       </div>
     </article>
   );

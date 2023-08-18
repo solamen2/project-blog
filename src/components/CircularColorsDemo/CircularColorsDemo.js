@@ -25,15 +25,15 @@ function CircularColorsDemo() {
   React.useEffect(() => {
     const intervalId = window.setInterval(() => {
       if (isTimerRunning) {
-        setTimeElapsed(timeElapsed + 1);
-        setSelectedColor((selectedColor + 1) % 3);
+        setTimeElapsed((currentValue) => currentValue + 1);
+        setSelectedColor((currentValue) => (currentValue + 1) % COLORS.length);
       }
     }, 1 * 1000);
 
     return () => {
       window.clearInterval(intervalId);
     };
-  }, [isTimerRunning, selectedColor, timeElapsed]);
+  }, [isTimerRunning]);
 
   function handlePlayPauseClick() {
     setIsTimerRunning(!isTimerRunning);
